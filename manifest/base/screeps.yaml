@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: screeps
+  labels:
+    app: screeps
+spec:
+  replicas: 1
+  template:
+    metadata:
+      name: screeps
+      labels:
+        app: screeps
+    spec:
+      containers:
+        - name: screeps
+          image: screepers/screeps-launcher
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 21025
+              protocol: TCP
+          resources:
+            limits:
+              cpu: 500m
+              memory: 500Mi
+            requests:
+              cpu: 200m
+              memory: 200Mi
+      restartPolicy: Always
+      volumes:
+        - name: screeps-conf
+          configMap:
+            name: "screeps-conf"
+            items:
+              - key: "config.yaml"
+                path: "config.yaml"
+
+
+  selector:
+    matchLabels:
+      app: screeps
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: screeps-data
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: 3Gi

@@ -1,0 +1,9 @@
+resources:
+  - screeps.yaml
+#  - mongo.yaml
+#  - redis.yaml
+
+configMapGenerator:
+  - name: screeps-conf
+    files:
+      - config.yaml
